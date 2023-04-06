@@ -1,0 +1,15 @@
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\bin\Debug\net7.0\ReXgen_script_2.exe
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\bin\Debug\net7.0\ReXgen_script_2.deps.json
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\bin\Debug\net7.0\ReXgen_script_2.runtimeconfig.json
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\bin\Debug\net7.0\ReXgen_script_2.dll
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\bin\Debug\net7.0\ReXgen_script_2.pdb
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ReXgen_script_2.csproj.AssemblyReference.cache
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ReXgen_script_2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ReXgen_script_2.AssemblyInfoInputs.cache
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ReXgen_script_2.AssemblyInfo.cs
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ReXgen_script_2.csproj.CoreCompileInputs.cache
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ReXgen_script_2.dll
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\refint\ReXgen_script_2.dll
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ReXgen_script_2.pdb
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ReXgen_script_2.genruntimeconfig.cache
+C:\Damola\Thesis\Influx\DBCscript\ReXgen_script_2\obj\Debug\net7.0\ref\ReXgen_script_2.dll
