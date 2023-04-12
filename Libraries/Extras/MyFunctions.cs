@@ -85,6 +85,7 @@ namespace Extras
                     if (signalValue >= signal.Minimum && signalValue <= signal.Maximum)
                     {
                         Console.WriteLine(System.String.Format("{0} = {1} {2}", signal.Name, signalValue, signal.Unit));
+                        values.Add(signal.Name, signalValue);
                     }
                     else
                     {

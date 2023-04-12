@@ -52,7 +52,10 @@ namespace script
                                     Console.WriteLine(System.String.Format("ID match found: {0} ({1:x3})", canframe.Identifier, canframe.Identifier));
                                     Console.WriteLine(msg.Name + " Signals:");
                                     messageFound = true;
-                                    MyFunctions.DecodeFrame(canframe, msg);
+                                    Dictionary<string, double>  decodeValues = MyFunctions.DecodeFrame(canframe, msg);
+                                    Console.WriteLine("Writing to database......");
+                                    InfluxDBClass.SendToInfluxDB(msg.Name, decodeValues);
+                                    Console.WriteLine("Completed!");
                                     break;
                                 }
 
@@ -69,7 +72,7 @@ namespace script
 
                             //Console.WriteLine(canframe);
                             //Console.WriteLine("To string function: " + canframe.ToString());
-                            Thread.Sleep(1500);
+                            //Thread.Sleep(1500);
                         }
 
                     }
