@@ -36,7 +36,7 @@ namespace CanFrameLib
         // Destructor
         ~CANFrame()
         {
-            Console.WriteLine("Destroyed!");
+            
         }
 
         public override string ToString()
