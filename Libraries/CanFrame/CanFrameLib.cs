@@ -12,7 +12,7 @@ namespace CanFrameLib
         public uint Identifier { get; set; }    // CAN identifier or message ID
 
         public int DataLength { get; set; }     // Length of CAN data or payload
-        public byte[] Payload { get; set; }  // CAN data payload or message data
+        public byte[] Payload { get; set; } = new byte[0];  // CAN data payload or message data
 
         
         //CANFrame constructor
@@ -28,14 +28,29 @@ namespace CanFrameLib
             {
                 payload += canframe[4 + i];
             }
-            Payload = Encoding.ASCII.GetBytes(payload);
+            Payload = Payload.Concat(Convert.FromHexString(payload)).ToArray();
         }
 
         public CANFrame() { }
 
+        // Destructor
+        ~CANFrame()
+        {
+            Console.WriteLine("Destroyed!");
+        }
+
         public override string ToString()
         {
             return System.String.Format("({0}) {1} {2:x3} [{3}] {4}", Timestamp, CANInterface, Identifier, DataLength, Encoding.ASCII.GetString(Payload));
+        }
+
+        public static byte[] StringToByteArray(string hex)
+        {
+            int NumberChars = hex.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
         }
 
 
