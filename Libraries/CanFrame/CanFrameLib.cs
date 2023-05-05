@@ -12,7 +12,7 @@ namespace CanFrameLib
         public uint Identifier { get; set; }    // CAN identifier or message ID
 
         public int DataLength { get; set; }     // Length of CAN data or payload
-        public byte[] Payload { get; set; } = new byte[0];  // CAN data payload or message data
+        public string Payload { get; set; }  // CAN data payload or message data
 
         
         //CANFrame constructor
@@ -28,7 +28,7 @@ namespace CanFrameLib
             {
                 payload += canframe[4 + i];
             }
-            Payload = Payload.Concat(Convert.FromHexString(payload)).ToArray();
+            Payload = string.Copy(payload);
         }
 
         public CANFrame() { }
@@ -41,7 +41,7 @@ namespace CanFrameLib
 
         public override string ToString()
         {
-            return System.String.Format("({0}) {1} {2:x3} [{3}] {4}", Timestamp, CANInterface, Identifier, DataLength, Encoding.ASCII.GetString(Payload));
+            return System.String.Format("({0}) {1} {2:x3} [{3}] {4}", Timestamp, CANInterface, Identifier, DataLength, Payload);
         }
 
         public static byte[] StringToByteArray(string hex)
