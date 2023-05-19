@@ -93,17 +93,19 @@ namespace Extras
                         if (signalValue >= signal.Minimum && signalValue <= signal.Maximum)
                         {
                             Console.WriteLine(System.String.Format("{0} = {1} {2}", signal.Name, signalValue, signal.Unit));
-
+                            //Logger.Log(System.String.Format("{0} = {1} {2}", signal.Name, signalValue, signal.Unit));
                         }
                         else
                         {
-                            Console.WriteLine(System.String.Format("Not in range :{0} = {1} {2}", signal.Name, signalValue, signal.Unit));
+                            Console.WriteLine(System.String.Format("{0} = {1} {2} (Not in range )", signal.Name, signalValue, signal.Unit));
+                            //Logger.Log(System.String.Format("{0} = {1} {2} (Not in range )", signal.Name, signalValue, signal.Unit));
                         }
                         values.Add(signal.Name, signalValue);
                     }
                     else
                     {
-                        Console.WriteLine(signal.Name + " Skipped " );
+                        Console.WriteLine(signal.Name + " (Skipped) " );
+                        //Logger.Log(signal.Name + " (Skipped) ");
                     }
                     
                 }
@@ -113,7 +115,7 @@ namespace Extras
             else
             {
                 Console.WriteLine(msg.Name+ "'s DLC is greater than 8.");
-                
+                //Logger.Log(msg.Name + "'s DLC is greater than 8.");
             }
             return values;
         }
@@ -174,5 +176,7 @@ namespace Extras
 
             return dbcFilePath;
         }
+
+
     }
 }

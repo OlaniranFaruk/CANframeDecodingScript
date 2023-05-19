@@ -8,6 +8,7 @@ using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Core;
 using InfluxDB.Client.Writes;
 
+
 namespace Extras
 {
     public class DBClass
@@ -26,24 +27,40 @@ namespace Extras
             org = conf.getDB_ORG();
             DB = conf.getDB();
 
+
+        }
+        public override string ToString()
+        {
+            return string.Format("Token: {0}, bucket: {1}, org: {2}, DB: {3}", Token, bucket, org, DB);
         }
 
-        public static async Task SendToInfluxDB(string MsgName, Dictionary<string, double> Data)
+        public async Task SendToInfluxDB(string MsgName, Dictionary<string, double> Data)
         {
-            DBClass dc = new DBClass();
-
-            using var client = new InfluxDBClient(dc.DB, dc.Token);
-            var writeApi = client.GetWriteApiAsync();
-            Console.WriteLine("Writing to database......");
-            foreach (var item in Data)
+            try
             {
-                var point = PointData.Measurement(MsgName)
-                                .Tag("Signal", item.Key)
-                                .Field("Value", item.Value)
-                                .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
-               await writeApi.WritePointAsync(point, dc.bucket, dc.org);
+                DBClass dc = new DBClass();
+                //sConsole.WriteLine(dc.ToString());
+
+                using var client = new InfluxDBClient(dc.DB, dc.Token);
+                var writeApi = client.GetWriteApiAsync();
+                Console.WriteLine("Writing " + MsgName + " to database......");
+                //Logger.Log("Writing " + MsgName + " to database......");
+                foreach (var item in Data)
+                {
+                    var point = PointData.Measurement(MsgName)
+                                    .Tag("Signal", item.Key)
+                                    .Field("Value", item.Value)
+                                    .Timestamp(DateTime.UtcNow, WritePrecision.Ns);
+                    await writeApi.WritePointAsync(point, dc.bucket, dc.org);
+                }
+                Console.WriteLine(MsgName + ": Completed!");
+                //Logger.Log(MsgName + ": Completed!");
             }
-            Console.WriteLine("Completed!");
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error occurred: " + ex.Message);
+                //Logger.Log("Error occurred: " + ex.Message);
+            }
 
 
         }

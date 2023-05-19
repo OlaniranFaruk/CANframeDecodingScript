@@ -19,6 +19,7 @@ namespace script
             Dbc Dbc;
             string[] words;
             List<string> SelectedSignalsList = new List<string>();
+            
 
 
             //Get DBC file
@@ -27,8 +28,11 @@ namespace script
                         
             //read content of dbc file
             Console.WriteLine("Reading from " + dbcFilePath + " .......");
+            //Logger.Log("Reading from " + dbcFilePath + " .......");
             Dbc = Parser.ParseFromPath(dbcFilePath);
             Console.WriteLine("DBC file read successfully.");
+            //Logger.Log("DBC file read successfully.");
+            DBClass database = new DBClass();
             
             //get the selected signals and add to list
             using (var sr = new StreamReader(filename))
@@ -39,6 +43,7 @@ namespace script
                 }
             }
             Console.WriteLine("Receiving data on data pipe: "+canDataSrc);
+            //Logger.Log("Receiving data on data pipe: " + canDataSrc);
             while (true)
             {
                 using (var streamReader = new StreamReader(canDataSrc))
@@ -52,18 +57,25 @@ namespace script
                             words = Regex.Split(line, @"[\(\)\[\]\s]+").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
                             CANFrame canframe = new CANFrame(words);
                             Console.WriteLine("CAN Frame: " + canframe.ToString());
+                            //Logger.Log("CAN Frame: " + canframe.ToString());
 
                             foreach (Message msg in Dbc.Messages)
                             {
                                 if (msg.ID == (canframe.Identifier & 0x1FFFFFFF))
                                 {
                                     Console.WriteLine(System.String.Format("ID match found: {0} ({1:x3})", canframe.Identifier, canframe.Identifier));
+                                    //Logger.Log(System.String.Format("ID match found: {0} ({1:x3})", canframe.Identifier, canframe.Identifier));
+
+
                                     Console.WriteLine(msg.Name + " Signals:");
+                                    //Logger.Log(msg.Name + " Signals:");
                                     messageFound = true;
                                     Dictionary<string, double>  decodeValues = MyFunctions.DecodeFrame(canframe, msg, SelectedSignalsList);
+                                    
                                     if (decodeValues.Count != 0)
                                     {
-                                        DBClass.SendToInfluxDB(msg.Name, decodeValues);
+                                        
+                                        database.SendToInfluxDB(msg.Name, decodeValues);
                                     }
                                     
                                     break;
@@ -74,6 +86,7 @@ namespace script
                             if (messageFound == false)
                             {
                                 Console.WriteLine(System.String.Format("No match found for ID : {0} ({1:x3})", canframe.Identifier, canframe.Identifier));
+                                //Logger.Log(System.String.Format("No match found for ID : {0} ({1:x3})", canframe.Identifier, canframe.Identifier));
                             }
                             else
                             {
