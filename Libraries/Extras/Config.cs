@@ -36,18 +36,27 @@ namespace Extras
 
         private static async Task<bool> CreateBucketIfNotExistsAsync(string bucketName, string url, string token, string org, int retentionSeconds)
         {
-            using var client = InfluxDBClientFactory.Create(url, token);
-            string orgId = (await client.GetOrganizationsApi().FindOrganizationsAsync(org: org)).First().Id;
-            var bucket = await client.GetBucketsApi().FindBucketByNameAsync(bucketName);
+            try
+            {
+                using var client = InfluxDBClientFactory.Create(url, token);
+                string orgId = (await client.GetOrganizationsApi().FindOrganizationsAsync(org: org)).First().Id;
+                var bucket = await client.GetBucketsApi().FindBucketByNameAsync(bucketName);
 
-            if (bucket != null)
-            {
-                return true;
+                if (bucket != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    var retention = new BucketRetentionRules(BucketRetentionRules.TypeEnum.Expire, retentionSeconds);
+                    await client.GetBucketsApi().CreateBucketAsync(bucketName, retention, orgId);
+                    return false;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var retention = new BucketRetentionRules(BucketRetentionRules.TypeEnum.Expire, retentionSeconds);
-                await client.GetBucketsApi().CreateBucketAsync(bucketName, retention, orgId);
+                Console.WriteLine($"An error occurred while creating bucket: {ex.Message}");
+                //Logger.Log($"An error occurred while creating bucket: {ex.Message}");
                 return false;
             }
         }
@@ -68,7 +77,8 @@ namespace Extras
                 while ((line = streamReader.ReadLine()) != null)
                 {
                     string[] str = line.Split(':');
-                    lines.Add(str[1]);
+                    string s = str[1].Trim();
+                    lines.Add(s);
                 }
 
             }
