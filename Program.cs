@@ -14,12 +14,13 @@ namespace script
             string canDataSrc = "/var/run/rexgen/can0/rx";
             string filename = "./SelectedSignals.txt";
             string dbcFilePath = "./Dbc-file.dbc";
+            string CalcFilePath = "./CalcSignals.txt";
             string line;
             bool messageFound = false;
             Dbc Dbc;
             string[] words;
             List<string> SelectedSignalsList = new List<string>();
-            
+            List<string> CalcSignalsList = new List<string>();
 
 
             //Get DBC file
@@ -42,6 +43,16 @@ namespace script
                     SelectedSignalsList.Add(line);
                 }
             }
+
+            //get the formulas of the calculated signals
+            using (var sr = new StreamReader(CalcFilePath))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    CalcSignalsList.Add(line);
+                }
+            }
+
             Console.WriteLine("Receiving data on data pipe: "+canDataSrc);
             //Logger.Log("Receiving data on data pipe: " + canDataSrc);
             while (true)
@@ -74,7 +85,13 @@ namespace script
                                     
                                     if (decodeValues.Count != 0)
                                     {
-                                        
+                                        Dictionary<string, double> d = MyFunctions.returnNewSignals(decodeValues, CalcSignalsList, msg.Name);
+
+                                        foreach (KeyValuePair< string, double> item in d)
+                                        {
+                                            decodeValues.Append(item);
+                                        }
+
                                         database.SendToInfluxDB(msg.Name, decodeValues);
                                     }
                                     
