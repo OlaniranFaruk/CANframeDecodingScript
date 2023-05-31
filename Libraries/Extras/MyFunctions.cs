@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -118,6 +119,106 @@ namespace Extras
                 //Logger.Log(msg.Name + "'s DLC is greater than 8.");
             }
             return values;
+        }
+        static public Dictionary<string, double> returnNewSignals(Dictionary<string, double> decodeValues, List<string> FormulaList, string msgName)
+        {
+            Dictionary<string, double> calSignalsList = new Dictionary<string, double>();
+            string[] strs;
+            string mName, rest;
+            foreach (string item in FormulaList)
+            {
+                /* 
+                  formula syntax:
+                    [message name]:[new signal name] = [signal][+*-/%][signal]....
+                 */
+                
+                strs = item.Split(':');
+                mName = strs[0];    
+                rest = strs[1];
+                if (msgName.Equals(mName))
+                {
+                    //get the new signal name
+                    string[] strings = rest.Split('=');
+                    string newSignalName = strings[0];
+                    double newSignalValue = CalculateSignal(strings[1], decodeValues);
+                    calSignalsList.Add(newSignalName, newSignalValue);
+                }
+            }
+
+            return calSignalsList;
+        }
+
+        static double CalculateSignal(string forumlaStr, Dictionary<string, double> decodeValues)
+        {
+            double returnValue = 0, val;
+            string str, symbol = " ";
+            string[] formula = forumlaStr.Split(' ');
+
+            str = formula[0].Trim();
+            returnValue = Convert.ToDouble(decodeValues[str]);
+            for (int i = 1; i < formula.Length; i++)
+            {
+                str = formula[i].Trim();
+                if (!IsOperator(str))
+                {  
+                    switch (symbol)
+                    {
+                        case "+":
+                            str = formula[i + 1].Trim();
+                            if (!Double.TryParse(str, out val))
+                            {
+                                val = Convert.ToDouble(decodeValues[str]);
+                            }
+                            returnValue += val;
+                            break;
+                        case "*":
+                            str = formula[i + 1].Trim();
+                            if (!Double.TryParse(str, out val))
+                            {
+                                val = Convert.ToDouble(decodeValues[str]);
+                            }
+                            returnValue *= val;
+                            break;
+                        case "-":
+                            str = formula[i + 1].Trim();
+                            if (!Double.TryParse(str, out val))
+                            {
+                                val = Convert.ToDouble(decodeValues[str]);
+                            }
+                            returnValue -= val;
+                            break;
+                        case "/":
+                            str = formula[i + 1].Trim();
+                            if (!Double.TryParse(str, out val))
+                            {
+                                val = Convert.ToDouble(decodeValues[str]);
+                            }
+                            returnValue /= val;
+                            break;
+                        case "%":
+                            str = formula[i + 1].Trim();
+                            if (!Double.TryParse(str, out val))
+                            {
+                                val = Convert.ToDouble(decodeValues[str]);
+                            }
+                            returnValue %= val;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    symbol = str;   
+                }
+            }
+            return returnValue;
+        }
+
+        static bool IsOperator(string input)
+        {
+            Regex regex = new Regex(@"^[-+*/%]$");
+            return regex.IsMatch(input);
         }
         static string LittleEndian(string num)
         {
